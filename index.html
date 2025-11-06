@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Horizon Realty — Modern Real Estate Listings</title>
+  <meta name="description" content="Responsive real estate listing demo with search, filters, details modal and contact form." />
+  <style>
+    /* ------------------------
+       Simple Reset
+       ------------------------ */
+    * {box-sizing: border-box;}
+    html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:#0f172a;background:#f8fafc}
+
+    /* ------------------------
+       Utilities
+       ------------------------ */
+    .container{max-width:1200px;margin:0 auto;padding:24px}
+    h1,h2,h3{margin:0}
+    .btn{display:inline-block;padding:10px 14px;border-radius:8px;border:0;background:#0ea5a4;color:white;cursor:pointer}
+    .muted{color:#64748b}
+
+    /* ------------------------
+       Header / Hero
+       ------------------------ */
+    header{background:linear-gradient(90deg,#06b6d4 0%, #3b82f6 100%);color:white;padding:28px 0;margin-bottom:18px}
+    .hero-grid{display:flex;gap:20px;align-items:center}
+    .hero-left{flex:1}
+    .hero-right{flex:1;display:flex;justify-content:center}
+    .search-row{margin-top:18px;display:flex;gap:10px}
+    .search-row input, .search-row select{flex:1;padding:12px;border-radius:8px;border:0}
+
+    /* ------------------------
+       Filters & Listings
+       ------------------------ */
+    .layout{display:grid;grid-template-columns:320px 1fr;gap:22px}
+    @media (max-width:900px){.layout{grid-template-columns:1fr} .hero-grid{flex-direction:column} .hero-right{order:-1}}
+
+    .card{background:white;border-radius:12px;padding:14px;box-shadow:0 6px 18px rgba(2,6,23,0.06)}
+    .filter-section{position:sticky;top:20px}
+    .filter-section h3{margin-bottom:12px}
+    .range-row{display:flex;gap:8px}
+    .range-row input{flex:1;padding:8px;border-radius:6px;border:1px solid #e6eef6}
+
+    /* Listing grid */
+    .grid-list{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+    @media (max-width:700px){.grid-list{grid-template-columns:1fr}}
+
+    .prop-card{overflow:hidden;border-radius:12px}
+    .prop-thumb{height:180px;background-size:cover;background-position:center}
+    .prop-body{padding:12px}
+    .prop-meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+    .price{font-weight:700;color:#0f172a}
+    .tag{background:#eef2ff;color:#3730a3;padding:6px 8px;border-radius:8px;font-size:12px}
+
+    /* Modal */
+    .modal{position:fixed;inset:0;background:rgba(2,6,23,0.5);display:none;align-items:center;justify-content:center;padding:20px}
+    .modal.open{display:flex}
+    .modal-card{background:white;width:100%;max-width:900px;border-radius:12px;overflow:hidden}
+    .modal-body{display:grid;grid-template-columns:1fr 340px}
+    @media (max-width:900px){.modal-body{grid-template-columns:1fr}}
+    .gallery{height:360px;background:#111}
+    .details{padding:18px}
+
+    /* Contact form */
+    form{display:grid;gap:8px}
+    input[type=text], input[type=email], textarea{padding:10px;border:1px solid #e6eef6;border-radius:8px}
+
+    footer{margin-top:28px;padding:20px 0;text-align:center;color:#94a3b8}
+
+    /* small helpers */
+    .flex{display:flex;gap:10px}
+    .center{display:flex;align-items:center;justify-content:center}
+    .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#e6f7f6;color:#0f766e;font-weight:600}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-left">
+          <h1 style="font-size:28px">Horizon Realty</h1>
+          <p class="muted" style="margin-top:6px">Find your next home or investment property — filtered, mapped and ready to view.</p>
+          <div class="search-row" style="margin-top:16px">
+            <input id="q" placeholder="Search city, neighborhood, or property id" />
+            <select id="ptype"><option value="any">Any type</option><option value="house">House</option><option value="apartment">Apartment</option><option value="land">Land</option></select>
+            <button class="btn" onclick="applyFilters()">Search</button>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div style="max-width:360px;text-align:center">
+            <img src="https://images.unsplash.com/photo-1560184897-6f6f8d1f7b9e?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder" alt="home" style="width:100%;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.12)"/>
+            <div style="margin-top:10px" class="muted">Featured listing: 3 BHK in Lakeside</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="layout">
+      <!-- Filters column -->
+      <aside class="filter-section card">
+        <h3>Filters</h3>
+        <div style="margin-top:8px">
+          <label class="muted">Price range (Lakh)</label>
+          <div class="range-row" style="margin-top:6px">
+            <input id="minPrice" placeholder="Min" />
+            <input id="maxPrice" placeholder="Max" />
+          </div>
+        </div>
+        <div style="margin-top:12px">
+          <label class="muted">Bedrooms</label>
+          <div style="margin-top:8px" class="flex">
+            <button class="btn" onclick="setBeds(0)">Any</button>
+            <button class="btn" onclick="setBeds(1)">1+</button>
+            <button class="btn" onclick="setBeds(2)">2+</button>
+            <button class="btn" onclick="setBeds(3)">3+</button>
+          </div>
+        </div>
+        <div style="margin-top:14px">
+          <h3>Quick actions</h3>
+          <div style="margin-top:8px" class="flex">
+            <button class="btn" onclick="clearFilters()">Clear</button>
+            <button class="btn" onclick="randomize()">Show Random</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Listings -->
+      <section>
+        <div class="card" style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-weight:700">Available Properties</div>
+            <div class="muted" id="resultsSummary">Showing 0 properties</div>
+          </div>
+          <div class="flex">
+            <div class="muted">Sort by:</div>
+            <select id="sortBy" onchange="renderListings()">
+              <option value="newest">Newest</option>
+              <option value="priceAsc">Price: Low → High</option>
+              <option value="priceDesc">Price: High → Low</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="listings" class="grid-list"></div>
+
+        <!-- Pagination placeholder -->
+        <div style="margin-top:16px;text-align:center">
+          <button class="btn" onclick="loadMore()">Load more</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Modal for property details -->
+    <div id="modal" class="modal" onclick="closeModal(event)">
+      <div class="modal-card" onclick="event.stopPropagation()">
+        <div class="modal-body">
+          <div>
+            <div id="modalGallery" class="gallery"></div>
+            <div style="padding:12px">
+              <h3 id="modalTitle">Property title</h3>
+              <div class="muted" id="modalLocation">Location</div>
+              <div style="margin-top:10px" id="modalDesc">Description</div>
+            </div>
+          </div>
+          <aside class="card details">
+            <div class="flex" style="justify-content:space-between;align-items:center">
+              <div class="price" id="modalPrice">₹ 0 L</div>
+              <div class="tag" id="modalType">Type</div>
+            </div>
+            <div style="margin-top:12px">
+              <div class="muted">Details</div>
+              <ul id="modalList" class="muted" style="padding-left:18px;margin-top:6px"></ul>
+            </div>
+            <div style="margin-top:12px">
+              <h4>Contact Agent</h4>
+              <form id="contactForm" onsubmit="contactSubmit(event)">
+                <input id="cname" type="text" placeholder="Your name" required />
+                <input id="cemail" type="email" placeholder="Your email" required />
+                <textarea id="cmsg" rows="4" placeholder="Message (optional)"></textarea>
+                <div style="margin-top:8px;text-align:right"><button class="btn">Send</button></div>
+              </form>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      © <span id="year"></span> Horizon Realty — Demo site. Built with HTML, CSS & JavaScript.
+    </footer>
+  </main>
+
+  <script>
+    // ------------------------
+    // Sample data
+    // ------------------------
+    const PROPERTIES = [
+      {id:'HR-1001',title:'Lakeside Family Home',type:'house',price:95,city:'Pune',loc:'Lakeside, Pune',beds:3,area:1900,desc:'Spacious 3 BHK facing the lake with modern finishes and private garden.',img:'https://images.unsplash.com/photo-1560184897-6f6f8d1f7b9e?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder',images:[],new:true},
+      {id:'HR-1002',title:'Central Apartment',type:'apartment',price:68,city:'Mumbai',loc:'Andheri West, Mumbai',beds:2,area:920,desc:'Cozy 2 BHK near metro and shopping. Great for young professionals.',img:'https://images.unsplash.com/photo-1598928506310-0b8a6e2b6d1e?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder',images:[],new:false},
+      {id:'HR-1003',title:'Greenfield Land Plot',type:'land',price:120,city:'Bengaluru',loc:'Whitefield outskirts',beds:0,area:4500,desc:'Ready-to-build plot with clear title and gated community plans.',img:'https://images.unsplash.com/photo-1505691723518-34d7d9d8a57a?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder',images:[],new:false},
+      {id:'HR-1004',title:'Penthouse with Terrace',type:'apartment',price:220,city:'Delhi',loc:'Connaught Place, Delhi',beds:4,area:3200,desc:'Luxurious penthouse offering panoramic city views and private terrace.',img:'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder',images:[],new:true},
+      {id:'HR-1005',title:'Suburban 2 BHK',type:'house',price:45,city:'Chennai',loc:'Adyar, Chennai',beds:2,area:980,desc:'Well-kept house in a quiet neighborhood with good schools nearby.',img:'https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder',images:[],new:false}
+    ];
+
+    // small images array for modal gallery fallback
+    const SAMPLE_GALLERY = [
+      'https://images.unsplash.com/photo-1560184897-6f6f8d1f7b9e?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder',
+      'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder'
+    ];
+
+    // ------------------------
+    // State
+    // ------------------------
+    let state = {
+      q:'', ptype:'any', minPrice:null, maxPrice:null, beds:0, sort:'newest', page:1, perPage:6, list:PROPERTIES.slice()
+    };
+
+    // ------------------------
+    // Helpers
+    // ------------------------
+    function $(id){return document.getElementById(id)}
+
+    function applyFilters(){
+      state.q = $('q').value.trim().toLowerCase();
+      state.ptype = $('ptype').value;
+      const min = parseFloat($('minPrice').value);
+      const max = parseFloat($('maxPrice').value);
+      state.minPrice = isNaN(min)?null:min;
+      state.maxPrice = isNaN(max)?null:max;
+      renderListings(true);
+    }
+
+    function setBeds(n){ state.beds = n; renderListings(true); }
+    function clearFilters(){ $('q').value=''; $('ptype').value='any'; $('minPrice').value=''; $('maxPrice').value=''; state.beds=0; renderListings(true); }
+    function randomize(){ state.list = PROPERTIES.sort(()=>0.5-Math.random()); renderListings(true); }
+
+    function matches(p){
+      if(state.q){ const s = (p.title+' '+p.city+' '+p.loc+' '+p.id).toLowerCase(); if(!s.includes(state.q)) return false; }
+      if(state.ptype!=='any' && p.type !== state.ptype) return false;
+      if(state.minPrice!==null && p.price < state.minPrice) return false;
+      if(state.maxPrice!==null && p.price > state.maxPrice) return false;
+      if(state.beds>0 && p.beds < state.beds) return false;
+      return true;
+    }
+
+    function sortList(list){
+      const s = $('sortBy')?.value || state.sort;
+      if(s==='priceAsc') return list.sort((a,b)=>a.price-b.price);
+      if(s==='priceDesc') return list.sort((a,b)=>b.price-a.price);
+      // newest default: rely on new flag
+      return list.sort((a,b)=> (b.new?1:0) - (a.new?1:0));
+    }
+
+    // ------------------------
+    // Render
+    // ------------------------
+    function renderListings(resetPage=false){
+      if(resetPage) state.page = 1;
+      const container = $('listings'); container.innerHTML='';
+      let list = PROPERTIES.filter(matches);
+      const total = list.length;
+      list = sortList(list.slice());
+      const start = (state.page-1)*state.perPage, end=start+state.perPage;
+      const chunk = list.slice(start,end);
+
+      $('resultsSummary').innerText = `Showing ${start+1}-${Math.min(end,total)} of ${total} properties`;
+
+      if(chunk.length===0){ container.innerHTML = '<div class="card muted">No properties found. Try clearing filters.</div>'; return; }
+
+      for(const p of chunk){
+        const el = document.createElement('div'); el.className='prop-card card';
+        el.innerHTML = `
+          <div style="background-image:url('${p.img}');" class="prop-thumb"></div>
+          <div class="prop-body">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="max-width:65%"><strong>${p.title}</strong><div class="muted" style="font-size:13px">${p.loc}</div></div>
+              <div style="text-align:right"><div class="price">₹ ${p.price} L</div><div class="muted" style="font-size:12px">${p.area} sqft</div></div>
+            </div>
+            <div class="prop-meta">
+              <div class="muted">${p.beds} beds • ${p.type}</div>
+              <div style="display:flex;gap:8px">
+                <button class="btn" onclick="openModal('${p.id}')">View</button>
+                <button class="btn" onclick="fav('${p.id}')">❤</button>
+              </div>
+            </div>
+          </div>
+        `;
+        container.appendChild(el);
+      }
+    }
+
+    function loadMore(){ state.page++; renderListings(); }
+
+    // ------------------------
+    // Modal & contact
+    // ------------------------
+    function openModal(id){
+      const p = PROPERTIES.find(x=>x.id===id);
+      if(!p) return;
+      $('modalTitle').innerText = p.title + ' — ' + p.id;
+      $('modalLocation').innerText = p.loc + ' • ' + p.city;
+      $('modalDesc').innerText = p.desc;
+      $('modalPrice').innerText = `₹ ${p.price} L`;
+      $('modalType').innerText = p.type.charAt(0).toUpperCase()+p.type.slice(1);
+      const list = $('modalList'); list.innerHTML='';
+      const details = [`Bedrooms: ${p.beds}`, `Area: ${p.area} sqft`, `Property ID: ${p.id}`];
+      details.forEach(d=>{ const li=document.createElement('li'); li.innerText=d; list.appendChild(li); });
+
+      // gallery
+      const gal = $('modalGallery'); gal.innerHTML='';
+      const imgs = p.images && p.images.length? p.images : SAMPLE_GALLERY;
+      let idx = 0;
+      gal.style.backgroundImage = `url('${imgs[0]}')`;
+      gal.style.backgroundSize = 'cover';
+      gal.style.backgroundPosition = 'center';
+
+      document.querySelectorAll('.modal').forEach(m=>m.classList.add('open'));
+      // remember which property is open
+      document.querySelector('body').dataset.open = id;
+    }
+
+    function closeModal(e){
+      document.querySelectorAll('.modal').forEach(m=>m.classList.remove('open'));
+      delete document.querySelector('body').dataset.open;
+    }
+
+    function closeModalButton(){ closeModal(); }
+
+    function contactSubmit(e){
+      e.preventDefault();
+      const name = $('cname').value.trim(); const email = $('cemail').value.trim(); const msg = $('cmsg').value.trim();
+      const pid = document.querySelector('body').dataset.open || 'unknown';
+      alert(`Thanks ${name}! Your message about ${pid} was sent. (Demo — no real backend)`);
+      document.getElementById('contactForm').reset();
+      closeModal();
+    }
+
+    // ------------------------
+    // Favorites (localStorage demo)
+    // ------------------------
+    function fav(id){
+      const key = 'hr_favs'; const raw = localStorage.getItem(key) || '[]';
+      const arr = JSON.parse(raw);
+      if(arr.includes(id)){ const i=arr.indexOf(id); arr.splice(i,1); alert('Removed from favorites'); } else { arr.push(id); alert('Added to favorites'); }
+      localStorage.setItem(key, JSON.stringify(arr));
+    }
+
+    // ------------------------
+    // Init
+    // ------------------------
+    window.addEventListener('load', ()=>{
+      $('year').innerText = new Date().getFullYear();
+      renderListings(true);
+    });
+  </script>
+</body>
+</html>
