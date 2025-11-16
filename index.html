@@ -23,9 +23,17 @@
     nav .menu a{margin-left:22px;font-weight:500}
 
     /* HERO */
-    .hero{padding:70px 28px;text-align:center;background:url('https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1200') center/cover no-repeat;color:white}
+    .hero{padding:70px 28px;text-align:center;background:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200') center/cover no-repeat;color:white}
     .hero h1{font-size:2.5rem;margin:0;text-shadow:0 4px 20px rgba(0,0,0,0.6)}
     .hero p{margin-top:10px;font-size:1.1rem;text-shadow:0 4px 20px rgba(0,0,0,0.6)}
+
+    /* DASHBOARD */
+    #dashboard{padding:40px 20px;text-align:center;background:#ffffff;margin-top:20px}
+    #dashboard h2{font-size:1.8rem;margin-bottom:20px;color:var(--accent)}
+    .stats{display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
+    .stat-box{background:white;padding:20px 30px;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,0.1)}
+    .stat-box h3{margin:0;font-size:1.6rem;color:var(--accent)}
+    .stat-box p{margin:6px 0 0;color:var(--muted)}
 
     .container{max-width:1200px;margin:30px auto;padding:20px}
 
@@ -56,6 +64,7 @@
     <div class="logo">Dream Roof</div>
     <div class="menu">
       <a href="#home">Home</a>
+      <a href="#dashboard">Dashboard</a>
       <a href="#properties">Properties</a>
       <a href="#contact">Contact</a>
     </div>
@@ -65,6 +74,25 @@
   <section class="hero" id="home">
     <h1>Find Your Perfect Home with Dream Roof</h1>
     <p>Explore the best properties across major Indian cities</p>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard">
+    <h2>Dashboard Overview</h2>
+    <div class="stats">
+      <div class="stat-box">
+        <h3>10</h3>
+        <p>Total Properties</p>
+      </div>
+      <div class="stat-box">
+        <h3>8</h3>
+        <p>Cities Covered</p>
+      </div>
+      <div class="stat-box">
+        <h3>120+</h3>
+        <p>Happy Clients</p>
+      </div>
+    </div>
   </section>
 
   <div class="container" id="properties">
@@ -94,79 +122,18 @@
 
 <script>
 const properties = [
-  {
-    title:'Modern 3BHK in Wakad, Pune', price:'₹ 1.25 Cr', desc:'Luxury apartment with balcony.',
-    img:'https://images.unsplash.com/photo-1560448070-c6c7f16b6d0a?q=80&w=1200'
-  },
-  {
-    title:'2BHK MG Road, Bengaluru', price:'₹ 82 L', desc:'Prime location near metro.',
-    img:'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200'
-  },
-  {
-    title:'Villa in Khandala', price:'₹ 3.8 Cr', desc:'Hill view villa with pool.',
-    img:'https://images.unsplash.com/photo-1505692794400-9a4b3f1b3a2b?q=80&w=1200'
-  },
-  {
-    title:'Studio Marine Lines, Mumbai', price:'₹ 48 L', desc:'Perfect for professionals.',
-    img:'https://images.unsplash.com/photo-1549187774-b4e9c71e1a36?q=80&w=1200'
-  },
-  {
-    title:'House in Jaipur', price:'₹ 1.05 Cr', desc:'Calm neighbourhood.',
-    img:'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?q=80&w=1200'
-  },
-  {
-    title:'4BHK Delhi South', price:'₹ 2.6 Cr', desc:'Spacious luxury home.',
-    img:'https://images.unsplash.com/photo-1586105251261-72a756497a11?q=80&w=1200'
-  },
-  {
-    title:'Penthouse Hyderabad', price:'₹ 3.2 Cr', desc:'Skyline view.',
-    img:'https://images.unsplash.com/photo-1600585154154-210aeee2b2c5?q=80&w=1200'
-  },
-  {
-    title:'Chennai Beachside Apartment', price:'₹ 1.4 Cr', desc:'Sea-facing home.',
-    img:'https://images.unsplash.com/photo-1598928506311-7f6d3b8a2a6a?q=80&w=1200'
-  },
-  {
-    title:'Kolkata City Apartment', price:'₹ 95 L', desc:'Close to central hubs.',
-    img:'https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=1200'
-  },
-  {
-    title:'Nagpur Family Home', price:'₹ 78 L', desc:'Peaceful area.',
-    img:'https://images.unsplash.com/photo-1493809842364-78817add7ffb?q=80&w=1200'
-  }
+  {title:'Modern 3BHK in Pune', price:'₹ 1.25 Cr', desc:'Luxury apartment with balcony.', img:'https://images.unsplash.com/photo-1560448070-c6c7f16b6d0a?q=80&w=1200'},
+  {title:'2BHK MG Road Bengaluru', price:'₹ 82 L', desc:'Prime location near metro.', img:'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200'},
+  {title:'Villa in Khandala', price:'₹ 3.8 Cr', desc:'Hill view villa with pool.', img:'https://images.unsplash.com/photo-1505692794400-9a4b3f1b3a2b?q=80&w=1200'},
+  {title:'Studio in Mumbai', price:'₹ 48 L', desc:'Perfect for professionals.', img:'https://images.unsplash.com/photo-1549187774-b4e9c71e1a36?q=80&w=1200'},
+  {title:'Family House in Jaipur', price:'₹ 1.05 Cr', desc:'Calm neighbourhood.', img:'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?q=80&w=1200'},
+  {title:'4BHK Delhi South', price:'₹ 2.6 Cr', desc:'Spacious luxury home.', img:'https://images.unsplash.com/photo-1586105251261-72a756497a11?q=80&w=1200'},
+  {title:'Penthouse Hyderabad', price:'₹ 3.2 Cr', desc:'Skyline view.', img:'https://images.unsplash.com/photo-1600585154154-210aeee2b2c5?q=80&w=1200'},
+  {title:'Chennai Beach Apartment', price:'₹ 1.4 Cr', desc:'Sea-facing home.', img:'https://images.unsplash.com/photo-1598928506311-7f6d3b8a2a6a?q=80&w=1200'},
+  {title:'Kolkata City Apartment', price:'₹ 95 L', desc:'Close to central hubs.', img:'https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=1200'},
+  {title:'Nagpur Family Home', price:'₹ 78 L', desc:'Peaceful area.', img:'https://images.unsplash.com/photo-1493809842364-78817add7ffb?q=80&w=1200'}
 ];
 
 const listings = document.getElementById('listings');
 properties.forEach(p=>{
-  const card = document.createElement('div');
-  card.className='card';
-  card.innerHTML = `
-    <img class="thumb" src="${p.img}" />
-    <div class="card-body">
-      <div class="title">${p.title}</div>
-      <div class="price">${p.price}</div>
-      <div class="meta">${p.desc}</div>
-      <div class="btn">View Property</div>
-    </div>`;
-  card.querySelector('.btn').addEventListener('click',()=>openModal(p));
-  listings.appendChild(card);
-});
-
-const modal=document.getElementById('modal');
-const modalImg=document.getElementById('modalImg');
-const modalTitle=document.getElementById('modalTitle');
-const modalPrice=document.getElementById('modalPrice');
-const modalDesc=document.getElementById('modalDesc');
-unction openModal(p){
-  modal.style.display='flex';
-  modalImg.src=p.img;
-  modalTitle.textContent=p.title;
-  modalPrice.textContent=p.price;
-  modalDesc.textContent=p.desc;
-}
-document.getElementById('closeModal').onclick=()=>modal.style.display='none';
-modal.onclick=e=>{if(e.target===modal)modal.style.display='none'};
-</script>
-
-</body>
-</html>
+  const card = document.create
