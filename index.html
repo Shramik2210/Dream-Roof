@@ -2,359 +2,356 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Horizon Realty — Modern Real Estate Listings</title>
-  <meta name="description" content="Responsive real estate listing demo with search, filters, details modal and contact form." />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RealEstate Listings</title>
   <style>
-    /* ------------------------
-       Simple Reset
-       ------------------------ */
-    * {box-sizing: border-box;}
-    html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:#0f172a;background:#f8fafc}
+    :root{
+      --accent:#0ea5a4;
+      --muted:#6b7280;
+      --card-bg: #ffffff;
+      --page-bg: #f3f4f6;
+      --radius: 12px;
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    html,body{height:100%;margin:0;background:var(--page-bg);color:#111827}
+    .container{max-width:1100px;margin:36px auto;padding:20px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    header h1{margin:0;font-size:1.25rem}
+    .controls{display:flex;gap:8px;align-items:center}
+    .search{padding:8px 12px;border-radius:999px;border:1px solid #e5e7eb;background:white}
 
-    /* ------------------------
-       Utilities
-       ------------------------ */
-    .container{max-width:1200px;margin:0 auto;padding:24px}
-    h1,h2,h3{margin:0}
-    .btn{display:inline-block;padding:10px 14px;border-radius:8px;border:0;background:#0ea5a4;color:white;cursor:pointer}
-    .muted{color:#64748b}
-
-    /* ------------------------
-       Header / Hero
-       ------------------------ */
-    header{background:linear-gradient(90deg,#06b6d4 0%, #3b82f6 100%);color:white;padding:28px 0;margin-bottom:18px}
-    .hero-grid{display:flex;gap:20px;align-items:center}
-    .hero-left{flex:1}
-    .hero-right{flex:1;display:flex;justify-content:center}
-    .search-row{margin-top:18px;display:flex;gap:10px}
-    .search-row input, .search-row select{flex:1;padding:12px;border-radius:8px;border:0}
-
-    /* ------------------------
-       Filters & Listings
-       ------------------------ */
-    .layout{display:grid;grid-template-columns:320px 1fr;gap:22px}
-    @media (max-width:900px){.layout{grid-template-columns:1fr} .hero-grid{flex-direction:column} .hero-right{order:-1}}
-
-    .card{background:white;border-radius:12px;padding:14px;box-shadow:0 6px 18px rgba(2,6,23,0.06)}
-    .filter-section{position:sticky;top:20px}
-    .filter-section h3{margin-bottom:12px}
-    .range-row{display:flex;gap:8px}
-    .range-row input{flex:1;padding:8px;border-radius:6px;border:1px solid #e6eef6}
-
-    /* Listing grid */
-    .grid-list{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-    @media (max-width:700px){.grid-list{grid-template-columns:1fr}}
-
-    .prop-card{overflow:hidden;border-radius:12px}
-    .prop-thumb{height:180px;background-size:cover;background-position:center}
-    .prop-body{padding:12px}
-    .prop-meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
-    .price{font-weight:700;color:#0f172a}
-    .tag{background:#eef2ff;color:#3730a3;padding:6px 8px;border-radius:8px;font-size:12px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+    .card{background:var(--card-bg);border-radius:var(--radius);box-shadow:0 6px 18px rgba(17,24,39,0.06);overflow:hidden;display:flex;flex-direction:column}
+    .thumb{width:100%;height:160px;object-fit:cover;display:block}
+    .card-body{padding:12px 14px;flex:1;display:flex;flex-direction:column}
+    .title-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    .title{font-weight:600;font-size:0.98rem}
+    .price{color:var(--accent);font-weight:700}
+    .meta{color:var(--muted);font-size:0.85rem;margin-bottom:10px}
+    .thumbs-row{display:flex;gap:8px;margin-top:8px}
+    .mini-thumb{width:56px;height:40px;object-fit:cover;border-radius:8px;cursor:pointer;box-shadow:0 4px 10px rgba(2,6,23,0.06)}
+    .actions{display:flex;gap:8px;margin-top:auto}
+    .btn{padding:8px 10px;border-radius:8px;border:1px solid transparent;cursor:pointer}
+    .btn-primary{background:var(--accent);color:white}
+    .btn-outline{background:transparent;border-color:#e5e7eb}
 
     /* Modal */
-    .modal{position:fixed;inset:0;background:rgba(2,6,23,0.5);display:none;align-items:center;justify-content:center;padding:20px}
-    .modal.open{display:flex}
-    .modal-card{background:white;width:100%;max-width:900px;border-radius:12px;overflow:hidden}
-    .modal-body{display:grid;grid-template-columns:1fr 340px}
-    @media (max-width:900px){.modal-body{grid-template-columns:1fr}}
-    .gallery{height:360px;background:#111}
-    .details{padding:18px}
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.45);z-index:40}
+    .modal .panel{width:min(920px,95%);background:white;border-radius:14px;overflow:hidden;display:grid;grid-template-columns:1fr 320px}
+    .modal .gallery{background:#111827;color:white;padding:18px}
+    .modal img{width:100%;height:420px;object-fit:cover}
+    .modal .info{padding:18px}
+    .close{position:absolute;right:14px;top:14px;background:transparent;border:0;color:white;font-size:20px;cursor:pointer}
 
-    /* Contact form */
-    form{display:grid;gap:8px}
-    input[type=text], input[type=email], textarea{padding:10px;border:1px solid #e6eef6;border-radius:8px}
+    @media (max-width:800px){
+      .modal .panel{grid-template-columns:1fr}
+      .modal img{height:280px}
+    }
 
-    footer{margin-top:28px;padding:20px 0;text-align:center;color:#94a3b8}
-
-    /* small helpers */
-    .flex{display:flex;gap:10px}
-    .center{display:flex;align-items:center;justify-content:center}
-    .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#e6f7f6;color:#0f766e;font-weight:600}
   </style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <div class="hero-grid">
-        <div class="hero-left">
-          <h1 style="font-size:28px">Horizon Realty</h1>
-          <p class="muted" style="margin-top:6px">Find your next home or investment property — filtered, mapped and ready to view.</p>
-          <div class="search-row" style="margin-top:16px">
-            <input id="q" placeholder="Search city, neighborhood, or property id" />
-            <select id="ptype"><option value="any">Any type</option><option value="house">House</option><option value="apartment">Apartment</option><option value="land">Land</option></select>
-            <button class="btn" onclick="applyFilters()">Search</button>
-          </div>
-        </div>
-        <div class="hero-right">
-          <div style="max-width:360px;text-align:center">
-            <img src="https://images.unsplash.com/photo-1560184897-6f6f8d1f7b9e?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder" alt="home" style="width:100%;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.12)"/>
-            <div style="margin-top:10px" class="muted">Featured listing: 3 BHK in Lakeside</div>
-          </div>
+  <div class="container">
+    <header>
+      <h1>RealEstate — Featured Properties</h1>
+      <div class="controls">
+        <input class="search" id="search" placeholder="Search city, locality or price..." />
+        <button class="btn btn-outline" id="filterBtn">Filters</button>
+      </div>
+    </header>
+
+    <section class="grid" id="listings">
+      <!-- Cards inserted by JS -->
+    </section>
+  </div>
+
+  <!-- Modal for property details -->
+  <div class="modal" id="modal">
+    <div class="panel">
+      <div class="gallery">
+        <button class="close" id="closeModal">✕</button>
+        <img id="modalMainImg" src="" alt="Property image">
+        <div style="display:flex;gap:8px;margin-top:10px" id="modalThumbs"></div>
+      </div>
+      <div class="info">
+        <h2 id="modalTitle">Title</h2>
+        <p id="modalPrice" style="font-weight:700;margin-top:6px"></p>
+        <p id="modalDesc" style="color:var(--muted);margin-top:10px"></p>
+        <ul id="modalMeta" style="margin-top:12px;color:var(--muted);padding-left:18px"></ul>
+        <div style="margin-top:18px">
+          <button class="btn btn-primary">Contact Agent</button>
+          <button class="btn btn-outline" style="margin-left:8px">Schedule Visit</button>
         </div>
       </div>
     </div>
-  </header>
-
-  <main class="container">
-    <div class="layout">
-      <!-- Filters column -->
-      <aside class="filter-section card">
-        <h3>Filters</h3>
-        <div style="margin-top:8px">
-          <label class="muted">Price range (Lakh)</label>
-          <div class="range-row" style="margin-top:6px">
-            <input id="minPrice" placeholder="Min" />
-            <input id="maxPrice" placeholder="Max" />
-          </div>
-        </div>
-        <div style="margin-top:12px">
-          <label class="muted">Bedrooms</label>
-          <div style="margin-top:8px" class="flex">
-            <button class="btn" onclick="setBeds(0)">Any</button>
-            <button class="btn" onclick="setBeds(1)">1+</button>
-            <button class="btn" onclick="setBeds(2)">2+</button>
-            <button class="btn" onclick="setBeds(3)">3+</button>
-          </div>
-        </div>
-        <div style="margin-top:14px">
-          <h3>Quick actions</h3>
-          <div style="margin-top:8px" class="flex">
-            <button class="btn" onclick="clearFilters()">Clear</button>
-            <button class="btn" onclick="randomize()">Show Random</button>
-          </div>
-        </div>
-      </aside>
-
-      <!-- Listings -->
-      <section>
-        <div class="card" style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
-          <div>
-            <div style="font-weight:700">Available Properties</div>
-            <div class="muted" id="resultsSummary">Showing 0 properties</div>
-          </div>
-          <div class="flex">
-            <div class="muted">Sort by:</div>
-            <select id="sortBy" onchange="renderListings()">
-              <option value="newest">Newest</option>
-              <option value="priceAsc">Price: Low → High</option>
-              <option value="priceDesc">Price: High → Low</option>
-            </select>
-          </div>
-        </div>
-
-        <div id="listings" class="grid-list"></div>
-
-        <!-- Pagination placeholder -->
-        <div style="margin-top:16px;text-align:center">
-          <button class="btn" onclick="loadMore()">Load more</button>
-        </div>
-      </section>
-    </div>
-
-    <!-- Modal for property details -->
-    <div id="modal" class="modal" onclick="closeModal(event)">
-      <div class="modal-card" onclick="event.stopPropagation()">
-        <div class="modal-body">
-          <div>
-            <div id="modalGallery" class="gallery"></div>
-            <div style="padding:12px">
-              <h3 id="modalTitle">Property title</h3>
-              <div class="muted" id="modalLocation">Location</div>
-              <div style="margin-top:10px" id="modalDesc">Description</div>
-            </div>
-          </div>
-          <aside class="card details">
-            <div class="flex" style="justify-content:space-between;align-items:center">
-              <div class="price" id="modalPrice">₹ 0 L</div>
-              <div class="tag" id="modalType">Type</div>
-            </div>
-            <div style="margin-top:12px">
-              <div class="muted">Details</div>
-              <ul id="modalList" class="muted" style="padding-left:18px;margin-top:6px"></ul>
-            </div>
-            <div style="margin-top:12px">
-              <h4>Contact Agent</h4>
-              <form id="contactForm" onsubmit="contactSubmit(event)">
-                <input id="cname" type="text" placeholder="Your name" required />
-                <input id="cemail" type="email" placeholder="Your email" required />
-                <textarea id="cmsg" rows="4" placeholder="Message (optional)"></textarea>
-                <div style="margin-top:8px;text-align:right"><button class="btn">Send</button></div>
-              </form>
-            </div>
-          </aside>
-        </div>
-      </div>
-    </div>
-
-    <footer>
-      © <span id="year"></span> Horizon Realty — Demo site. Built with HTML, CSS & JavaScript.
-    </footer>
-  </main>
+  </div>
 
   <script>
-    // ------------------------
-    // Sample data
-    // ------------------------
-    const PROPERTIES = [
-      {id:'HR-1001',title:'Lakeside Family Home',type:'house',price:95,city:'Pune',loc:'Lakeside, Pune',beds:3,area:1900,desc:'Spacious 3 BHK facing the lake with modern finishes and private garden.',img:'https://images.unsplash.com/photo-1560184897-6f6f8d1f7b9e?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder',images:['https://images.unsplash.com/photo-1560185127-6ed6a80c9a3e?q=80&w=1600&auto=format&fit=crop','https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1600&auto=format&fit=crop','https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop'],new:true},
-      {id:'HR-1002',title:'Central Apartment',type:'apartment',price:68,city:'Mumbai',loc:'Andheri West, Mumbai',beds:2,area:920,desc:'Cozy 2 BHK near metro and shopping. Great for young professionals.',img:'https://images.unsplash.com/photo-1598928506310-0b8a6e2b6d1e?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder',images:['https://images.unsplash.com/photo-1560185127-6ed6a80c9a3e?q=80&w=1600&auto=format&fit=crop','https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1600&auto=format&fit=crop','https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop'],new:false},
-      {id:'HR-1003',title:'Greenfield Land Plot',type:'land',price:120,city:'Bengaluru',loc:'Whitefield outskirts',beds:0,area:4500,desc:'Ready-to-build plot with clear title and gated community plans.',img:'https://images.unsplash.com/photo-1505691723518-34d7d9d8a57a?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder',images:['https://images.unsplash.com/photo-1560185127-6ed6a80c9a3e?q=80&w=1600&auto=format&fit=crop','https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1600&auto=format&fit=crop','https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop'],new:false},
-      {id:'HR-1004',title:'Penthouse with Terrace',type:'apartment',price:220,city:'Delhi',loc:'Connaught Place, Delhi',beds:4,area:3200,desc:'Luxurious penthouse offering panoramic city views and private terrace.',img:'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder',images:['https://images.unsplash.com/photo-1560185127-6ed6a80c9a3e?q=80&w=1600&auto=format&fit=crop','https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1600&auto=format&fit=crop','https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop'],new:true},
-      {id:'HR-1005',title:'Suburban 2 BHK',type:'house',price:45,city:'Chennai',loc:'Adyar, Chennai',beds:2,area:980,desc:'Well-kept house in a quiet neighborhood with good schools nearby.',img:'https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder',images:['https://images.unsplash.com/photo-1560185127-6ed6a80c9a3e?q=80&w=1600&auto=format&fit=crop','https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1600&auto=format&fit=crop','https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop'],new:false}
-    ];
-
-    // small images array for modal gallery fallback
-    const SAMPLE_GALLERY = [
-      'https://images.unsplash.com/photo-1560184897-6f6f8d1f7b9e?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder',
-      'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder'
-    ];
-
-    // ------------------------
-    // State
-    // ------------------------
-    let state = {
-      q:'', ptype:'any', minPrice:null, maxPrice:null, beds:0, sort:'newest', page:1, perPage:6, list:PROPERTIES.slice()
-    };
-
-    // ------------------------
-    // Helpers
-    // ------------------------
-    function $(id){return document.getElementById(id)}
-
-    function applyFilters(){
-      state.q = $('q').value.trim().toLowerCase();
-      state.ptype = $('ptype').value;
-      const min = parseFloat($('minPrice').value);
-      const max = parseFloat($('maxPrice').value);
-      state.minPrice = isNaN(min)?null:min;
-      state.maxPrice = isNaN(max)?null:max;
-      renderListings(true);
-    }
-
-    function setBeds(n){ state.beds = n; renderListings(true); }
-    function clearFilters(){ $('q').value=''; $('ptype').value='any'; $('minPrice').value=''; $('maxPrice').value=''; state.beds=0; renderListings(true); }
-    function randomize(){ state.list = PROPERTIES.sort(()=>0.5-Math.random()); renderListings(true); }
-
-    function matches(p){
-      if(state.q){ const s = (p.title+' '+p.city+' '+p.loc+' '+p.id).toLowerCase(); if(!s.includes(state.q)) return false; }
-      if(state.ptype!=='any' && p.type !== state.ptype) return false;
-      if(state.minPrice!==null && p.price < state.minPrice) return false;
-      if(state.maxPrice!==null && p.price > state.maxPrice) return false;
-      if(state.beds>0 && p.beds < state.beds) return false;
-      return true;
-    }
-
-    function sortList(list){
-      const s = $('sortBy')?.value || state.sort;
-      if(s==='priceAsc') return list.sort((a,b)=>a.price-b.price);
-      if(s==='priceDesc') return list.sort((a,b)=>b.price-a.price);
-      // newest default: rely on new flag
-      return list.sort((a,b)=> (b.new?1:0) - (a.new?1:0));
-    }
-
-    // ------------------------
-    // Render
-    // ------------------------
-    function renderListings(resetPage=false){
-      if(resetPage) state.page = 1;
-      const container = $('listings'); container.innerHTML='';
-      let list = PROPERTIES.filter(matches);
-      const total = list.length;
-      list = sortList(list.slice());
-      const start = (state.page-1)*state.perPage, end=start+state.perPage;
-      const chunk = list.slice(start,end);
-
-      $('resultsSummary').innerText = `Showing ${start+1}-${Math.min(end,total)} of ${total} properties`;
-
-      if(chunk.length===0){ container.innerHTML = '<div class="card muted">No properties found. Try clearing filters.</div>'; return; }
-
-      for(const p of chunk){
-        const el = document.createElement('div'); el.className='prop-card card';
-        el.innerHTML = `
-          <div style="background-image:url('${p.img}');" class="prop-thumb"></div>
-          <div class="prop-body">
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <div style="max-width:65%"><strong>${p.title}</strong><div class="muted" style="font-size:13px">${p.loc}</div></div>
-              <div style="text-align:right"><div class="price">₹ ${p.price} L</div><div class="muted" style="font-size:12px">${p.area} sqft</div></div>
-            </div>
-            <div class="prop-meta">
-              <div class="muted">${p.beds} beds • ${p.type}</div>
-              <div style="display:flex;gap:8px">
-                <button class="btn" onclick="openModal('${p.id}')">View</button>
-                <button class="btn" onclick="fav('${p.id}')">❤</button>
-              </div>
-            </div>
-          </div>
-        `;
-        container.appendChild(el);
+    // Sample data with five properties and multiple thumbnails each
+    const properties = [
+      {
+        id:1,
+        title: 'Modern 3BHK Apartment in Wakad, Pune',
+        price: '₹ 1.25 Cr',
+        city: 'Pune',
+        area: '1400 sqft',
+        beds: 3,
+        baths: 3,
+        desc: 'Bright, sea-facing apartment with balcony and amenities.',
+        images: [
+          'https://images.unsplash.com/photo-1560448070-c6c7f16b6d0a?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=1',
+          'https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=2',
+          'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=3'
+        ]
+      },
+      {
+        id:2,
+        title: 'Cozy 2BHK Close to MG Road, Bengaluru',
+        price: '₹ 82 L',
+        city: 'Bengaluru',
+        area: '950 sqft',
+        beds: 2,
+        baths: 2,
+        desc: 'Well-connected apartment with modern fittings and parking.',
+        images: [
+          'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=4',
+          'https://images.unsplash.com/photo-1542317854-6e7f2f2a0f3d?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=5',
+          'https://images.unsplash.com/photo-1505691723518-36a8b2d6a2a8?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=6'
+        ]
+      },
+      {
+        id:3,
+        title: 'Luxury Villa — Khandala Hill View',
+        price: '₹ 3.8 Cr',
+        city: 'Lonavala',
+        area: '4200 sqft',
+        beds: 5,
+        baths: 4,
+        desc: 'Private garden, pool and uninterrupted valley views.',
+        images: [
+          'https://images.unsplash.com/photo-1505692794400-9a4b3f1b3a2b?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=7',
+          'https://images.unsplash.com/photo-1493809842364-78817add7ffb?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=8',
+          'https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=9'
+        ]
+      },
+      {
+        id:4,
+        title: 'Compact Studio near Marine Lines, Mumbai',
+        price: '₹ 48 L',
+        city: 'Mumbai',
+        area: '420 sqft',
+        beds: 1,
+        baths: 1,
+        desc: 'Perfect for professionals; prime location and transport links.',
+        images: [
+          'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=10',
+          'https://images.unsplash.com/photo-1549187774-b4e9c71e1a36?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=11',
+          'https://images.unsplash.com/photo-1598928506311-7f6d3b8a2a6a?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=12'
+        ]
+      },
+      {
+        id:5,
+        title: 'Family House with Garden, Jaipur',
+        price: '₹ 1.05 Cr',
+        city: 'Jaipur',
+        area: '1800 sqft',
+        beds: 4,
+        baths: 3,
+        desc: 'Spacious home in a quiet neighbourhood with schools nearby.',
+        images: [
+          'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=13',
+          'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=14',
+          'https://images.unsplash.com/photo-1505692794400-9a4b3f1b3a2b?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=15'
+        ]
       }
+    ];
+
+    const listingsEl = document.getElementById('listings');
+    const modal = document.getElementById('modal');
+    const modalMainImg = document.getElementById('modalMainImg');
+    const modalThumbs = document.getElementById('modalThumbs');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalPrice = document.getElementById('modalPrice');
+    const modalDesc = document.getElementById('modalDesc');
+    const modalMeta = document.getElementById('modalMeta');
+    const closeModalBtn = document.getElementById('closeModal');
+
+    function createCard(p){
+      const card = document.createElement('article');
+      card.className = 'card';
+
+      const img = document.createElement('img');
+      img.className = 'thumb';
+      img.src = p.images[0];
+      img.alt = p.title;
+      img.loading = 'lazy';
+      img.addEventListener('click', ()=> openModal(p));
+
+      const body = document.createElement('div');
+      body.className = 'card-body';
+
+      body.innerHTML = `
+        <div class="title-row">
+          <div class="title">${escapeHtml(p.title)}</div>
+          <div class="price">${escapeHtml(p.price)}</div>
+        </div>
+        <div class="meta">${escapeHtml(p.city)} • ${escapeHtml(p.area)} • ${p.beds}BHK</div>
+        <div class="thumbs-row" aria-hidden="false"></div>
+      `;
+
+      // mini thumbnails (ensure every property shows multiple thumbnails)
+      const thumbsRow = body.querySelector('.thumbs-row');
+      p.images.forEach((src, i)=>{
+        const t = document.createElement('img');
+        t.className = 'mini-thumb';
+        t.src = src;
+        t.alt = p.title + ' thumbnail ' + (i+1);
+        t.loading = 'lazy';
+        t.addEventListener('click', ()=> openModal(p, i));
+        thumbsRow.appendChild(t);
+      });
+
+      const actions = document.createElement('div');
+      actions.className = 'actions';
+      actions.innerHTML = `
+        <button class="btn btn-primary">View</button>
+        <button class="btn btn-outline">Save</button>
+      `;
+      actions.querySelector('.btn-primary').addEventListener('click', ()=> openModal(p));
+
+      body.appendChild(actions);
+
+      card.appendChild(img);
+      card.appendChild(body);
+      return card;
     }
 
-    function loadMore(){ state.page++; renderListings(); }
-
-    // ------------------------
-    // Modal & contact
-    // ------------------------
-    function openModal(id){
-      const p = PROPERTIES.find(x=>x.id===id);
-      if(!p) return;
-      $('modalTitle').innerText = p.title + ' — ' + p.id;
-      $('modalLocation').innerText = p.loc + ' • ' + p.city;
-      $('modalDesc').innerText = p.desc;
-      $('modalPrice').innerText = `₹ ${p.price} L`;
-      $('modalType').innerText = p.type.charAt(0).toUpperCase()+p.type.slice(1);
-      const list = $('modalList'); list.innerHTML='';
-      const details = [`Bedrooms: ${p.beds}`, `Area: ${p.area} sqft`, `Property ID: ${p.id}`];
-      details.forEach(d=>{ const li=document.createElement('li'); li.innerText=d; list.appendChild(li); });
-
-      // gallery
-      const gal = $('modalGallery'); gal.innerHTML='';
-      const imgs = p.images && p.images.length? p.images : SAMPLE_GALLERY;
-      let idx = 0;
-      gal.style.backgroundImage = `url('${imgs[0]}')`;
-      gal.style.backgroundSize = 'cover';
-      gal.style.backgroundPosition = 'center';
-
-      document.querySelectorAll('.modal').forEach(m=>m.classList.add('open'));
-      // remember which property is open
-      document.querySelector('body').dataset.open = id;
-    }
-
-    function closeModal(e){
-      document.querySelectorAll('.modal').forEach(m=>m.classList.remove('open'));
-      delete document.querySelector('body').dataset.open;
-    }
-
-    function closeModalButton(){ closeModal(); }
-
-    function contactSubmit(e){
-      e.preventDefault();
-      const name = $('cname').value.trim(); const email = $('cemail').value.trim(); const msg = $('cmsg').value.trim();
-      const pid = document.querySelector('body').dataset.open || 'unknown';
-      alert(`Thanks ${name}! Your message about ${pid} was sent. (Demo — no real backend)`);
-      document.getElementById('contactForm').reset();
-      closeModal();
-    }
-
-    // ------------------------
-    // Favorites (localStorage demo)
-    // ------------------------
-    function fav(id){
-      const key = 'hr_favs'; const raw = localStorage.getItem(key) || '[]';
-      const arr = JSON.parse(raw);
-      if(arr.includes(id)){ const i=arr.indexOf(id); arr.splice(i,1); alert('Removed from favorites'); } else { arr.push(id); alert('Added to favorites'); }
-      localStorage.setItem(key, JSON.stringify(arr));
-    }
-
-    // ------------------------
-    // Init
-    // ------------------------
-    window.addEventListener('load', ()=>{
-      $('year').innerText = new Date().getFullYear();
-      renderListings(true);
+    // render all properties
+    properties.forEach(p=>{
+      listingsEl.appendChild(createCard(p));
     });
+
+    // Modal open
+    function openModal(prop, imgIndex=0){
+      modal.style.display = 'flex';
+      modalMainImg.src = prop.images[imgIndex];
+      modalTitle.textContent = prop.title;
+      modalPrice.textContent = prop.price;
+      modalDesc.textContent = prop.desc;
+      modalMeta.innerHTML = '';
+      ['City: '+prop.city, 'Area: '+prop.area, 'Beds: '+prop.beds, 'Baths: '+prop.baths].forEach(m=>{
+        const li = document.createElement('li'); li.textContent = m; modalMeta.appendChild(li);
+      });
+
+      // thumbnails inside modal
+      modalThumbs.innerHTML = '';
+      prop.images.forEach((s, i)=>{
+        const img = document.createElement('img');
+        img.style.width = '84px'; img.style.height = '60px'; img.style.objectFit = 'cover'; img.style.borderRadius = '8px'; img.style.cursor='pointer';
+        img.src = s; img.alt = 'thumb'+i; img.loading='lazy';
+        img.addEventListener('click', ()=>{ modalMainImg.src = s; });
+        modalThumbs.appendChild(img);
+      });
+    }
+
+    function closeModal(){ modal.style.display = 'none'; }
+    closeModalBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
+
+    // basic escape to avoid accidental HTML injection
+    function escapeHtml(str){ return String(str).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m]; }); }
+
+    // Simple search (client-side)
+    document.getElementById('search').addEventListener('input', function(){
+      const q = this.value.trim().toLowerCase();
+      listingsEl.innerHTML = '';
+      properties.filter(p=>{
+        return p.title.toLowerCase().includes(q) || p.city.toLowerCase().includes(q) || p.price.toLowerCase().includes(q);
+      }).forEach(p=> listingsEl.appendChild(createCard(p)));
+    });
+
   </script>
+</body>
+</html>
+<!-- HOME PAGE -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>RealEstate — Home</title>
+<style>
+  body{margin:0;font-family:Arial;background:#f4f4f4}
+  header{background:#0ea5a4;color:white;padding:16px;font-size:22px;font-weight:bold}
+  nav{background:white;padding:12px;display:flex;gap:20px;border-bottom:1px solid #ddd}
+  nav a{text-decoration:none;color:#0ea5a4;font-weight:600}
+  .hero{padding:60px;text-align:center;background:url('https://images.unsplash.com/photo-1507089947368-19c1da9775ae?q=80') center/cover;height:380px;color:white;display:flex;flex-direction:column;justify-content:center;backdrop-filter:blur(2px)}
+  .hero h1{font-size:44px;margin:0;text-shadow:0 2px 8px rgba(0,0,0,0.4)}
+  .hero p{font-size:18px;margin-top:10px}
+  .section{padding:40px;text-align:center}
+  .btn{padding:12px 20px;background:#0ea5a4;color:white;border-radius:8px;text-decoration:none;margin-top:20px;display:inline-block}
+</style>
+</head>
+<body>
+<header>RealEstate Portal</header>
+<nav>
+  <a href="#">Home</a>
+  <a href="#dashboard">Dashboard</a>
+  <a href="#properties">Properties</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<section class="hero">
+  <h1>Find Your Dream Home</h1>
+  <p>Explore top listings across major cities</p>
+  <a href="#properties" class="btn">View Properties</a>
+</section>
+
+<section class="section">
+  <h2>Why Choose Us?</h2>
+  <p>Trusted by 50,000+ customers. Premium verified listings. Instant site visit bookings.</p>
+</section>
+</body>
+</html>
+
+<!-- DASHBOARD PAGE -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>RealEstate — Dashboard</title>
+<style>
+  body{margin:0;font-family:Arial;background:#eef2f3}
+  header{background:#0ea5a4;color:white;padding:16px;font-size:22px;font-weight:bold}
+  .dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;padding:30px}
+  .card{background:white;padding:20px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.08)}
+  .card h3{margin:0;font-size:20px}
+  .number{font-size:30px;margin-top:10px;font-weight:700;color:#0ea5a4}
+</style>
+</head>
+<body>
+<header>Dashboard Overview</header>
+
+<section class="dashboard">
+  <div class="card">
+    <h3>Total Properties</h3>
+    <div class="number">120</div>
+  </div>
+
+  <div class="card">
+    <h3>New Leads</h3>
+    <div class="number">45</div>
+  </div>
+
+  <div class="card">
+    <h3>Site Visits Today</h3>
+    <div class="number">16</div>
+  </div>
+
+  <div class="card">
+    <h3>Saved Listings</h3>
+    <div class="number">32</div>
+  </div>
+</section>
+
 </body>
 </html>
